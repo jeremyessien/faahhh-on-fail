@@ -1,0 +1,83 @@
+{
+  "name": "faahhh-on-fail",
+  "displayName": "FAAHHH on Fail",
+  "description": "Plays the viral FAAHHH sound when your tests fail. Supports all languages.",
+  "version": "0.0.1",
+  "publisher": "your-publisher-id",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Testing",
+    "Other"
+  ],
+  "extensionKind": [
+    "ui",
+    "workspace"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "faahhh.toggle",
+        "title": "FAAHHH: Toggle Sound"
+      },
+      {
+        "command": "faahhh.playPreview",
+        "title": "FAAHHH: Preview Sound"
+      }
+    ],
+    "configuration": {
+      "title": "FAAHHH on Fail",
+      "properties": {
+        "faahhh.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable the FAAHHH sound on test failure."
+        },
+        "faahhh.soundPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to a custom WAV sound file. Leave empty to use the built-in sound."
+        },
+        "faahhh.cooldownMs": {
+          "type": "number",
+          "default": 3000,
+          "minimum": 0,
+          "description": "Minimum milliseconds between sounds. Prevents overlapping FAAAHHs on mass failures."
+        },
+        "faahhh.volume": {
+          "type": "number",
+          "default": 1.0,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Playback volume (0.0 to 1.0). Only supported on macOS."
+        },
+        "faahhh.showNotifications": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show humorous notifications when tests fail."
+        },
+        "faahhh.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a status bar item reflecting test vibes."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "npx @vscode/vsce package"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.90.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.5.0"
+  }
+}
