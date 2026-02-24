@@ -12,7 +12,7 @@ let lastPlayedAt = 0;
 export function activate(context: vscode.ExtensionContext): void {
   audioPlayer = new AudioPlayer(context.extensionPath);
   statusBar = new StatusBarManager();
-  testDetector = new TestDetector(handleTestFailure);
+  testDetector = new TestDetector(handleTestFailure, handleTestPass);
 
   const config = vscode.workspace.getConfiguration("faahhh");
 
@@ -59,6 +59,10 @@ function handleTestFailure(source: string): void {
   if (config.get<boolean>("showNotifications")) {
     showFailureNotification(source);
   }
+}
+
+function handleTestPass(_source: string): void {
+  statusBar.setPassing();
 }
 
 function playSound(config: vscode.WorkspaceConfiguration): void {

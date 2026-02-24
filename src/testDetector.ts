@@ -60,11 +60,15 @@ function isTestCommand(commandLine: string): boolean {
 }
 
 export type OnTestFailure = (source: string) => void;
+export type OnTestPass = (source: string) => void;
 
 export class TestDetector implements vscode.Disposable {
   private readonly disposables: vscode.Disposable[] = [];
 
-  constructor(private readonly onFailure: OnTestFailure) {
+  constructor(
+    private readonly onFailure: OnTestFailure,
+    private readonly onPass: OnTestPass,
+  ) {
     this.disposables.push(
       vscode.window.onDidEndTerminalShellExecution((event) =>
         this.handleTerminalExecution(event),
@@ -81,8 +85,12 @@ export class TestDetector implements vscode.Disposable {
     const { exitCode } = event;
     const commandLine = event.execution.commandLine.value;
 
-    if (exitCode && exitCode !== 0 && isTestCommand(commandLine)) {
+    if (!isTestCommand(commandLine)) return;
+
+    if (exitCode !== undefined && exitCode !== 0) {
       this.onFailure(commandLine);
+    } else if (exitCode === 0) {
+      this.onPass(commandLine);
     }
   }
 
@@ -91,8 +99,12 @@ export class TestDetector implements vscode.Disposable {
     const task = event.execution.task;
     const isTestTask = task.group === vscode.TaskGroup.Test;
 
-    if (exitCode && exitCode !== 0 && isTestTask) {
+    if (!isTestTask) return;
+
+    if (exitCode !== undefined && exitCode !== 0) {
       this.onFailure(task.name);
+    } else if (exitCode === 0) {
+      this.onPass(task.name);
     }
   }
 
